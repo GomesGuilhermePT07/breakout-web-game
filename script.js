@@ -14,7 +14,7 @@ let paddleX = (canvasWidth - paddleWidth) / 2;
 // Movimento da raquete
 let rightPressed = false;
 let leftPressed = false;
-const paddleSpeed = 5;
+const paddleSpeed = 10;
 
 // Bola
 const ballRadius = 8;
@@ -26,6 +26,25 @@ let ballDY = -2; // velocidade vertical
 // Variáveis de controle de velocidade
 let speedFactor = 1.15; // Aumento de 50% na velocidade ao bater na raquete
 let speedDecreaseFactor = 0.9; // Diminui a velocidade em 10% ao bater nas paredes laterais
+
+// Blocos
+const blockRowCount = 5;
+const blockColumnCount = 7;
+const blockWidth = 75;
+const blockHeight = 20;
+const blockPadding = 10;
+const blockOffsetTop = 30;
+const blockOffsetLeft = 30;
+
+let blocks = [];
+
+// Criação dos blocos
+for (let c = 0; c < blockColumnCount; c++) {
+  blocks[c] = [];
+  for (let r = 0; r < blockRowCount; r++) {
+    blocks[c][r] = { x: 0, y: 0, status: 1 };
+  }
+}
 
 // Controlo do teclado
 document.addEventListener("keydown", keyDownHandler);
@@ -65,11 +84,47 @@ function drawPaddle() {
   ctx.closePath();
 }
 
+// Desenha os blocos
+function drawBlocks() {
+  for (let c = 0; c < blockColumnCount; c++) {
+    for (let r = 0; r < blockRowCount; r++) {
+      if (blocks[c][r].status === 1) {
+        const blockX = c * (blockWidth + blockPadding) + blockOffsetLeft;
+        const blockY = r * (blockHeight + blockPadding) + blockOffsetTop;
+        blocks[c][r].x = blockX;
+        blocks[c][r].y = blockY;
+        ctx.beginPath();
+        ctx.rect(blockX, blockY, blockWidth, blockHeight);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+      }
+    }
+  }
+}
+
+// Colisão com os blocos
+function collisionDetection() {
+  for (let c = 0; c < blockColumnCount; c++) {
+    for (let r = 0; r < blockRowCount; r++) {
+      const b = blocks[c][r];
+      if (b.status === 1) {
+        if (ballX > b.x && ballX < b.x + blockWidth && ballY > b.y && ballY < b.y + blockHeight) {
+          ballDY = -ballDY;
+          b.status = 0; // Destruir o bloco
+        }
+      }
+    }
+  }
+}
+
 // Limpa e redesenha o jogo a cada frame
 function draw() {
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
   drawBall();
   drawPaddle();
+  drawBlocks();
+  collisionDetection();
 
   // Atualiza posição da bola
   ballX += ballDX;
