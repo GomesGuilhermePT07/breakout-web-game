@@ -28,13 +28,13 @@ let speedFactor = 1.15; // Aumento de 50% na velocidade ao bater na raquete
 let speedDecreaseFactor = 0.9; // Diminui a velocidade em 10% ao bater nas paredes laterais
 
 // Blocos
-const blockRowCount = 5;
-const blockColumnCount = 7;
-const blockWidth = 75;
+const blockRowCount = 6;
+const blockColumnCount = 10;
+const blockWidth = 70;
 const blockHeight = 20;
-const blockPadding = 10;
-const blockOffsetTop = 30;
-const blockOffsetLeft = 30;
+const blockPadding = 0;
+const blockOffsetTop = 0;
+const blockOffsetLeft = 0;
 
 let blocks = [];
 
@@ -89,13 +89,13 @@ function drawBlocks() {
   for (let c = 0; c < blockColumnCount; c++) {
     for (let r = 0; r < blockRowCount; r++) {
       if (blocks[c][r].status === 1) {
-        const blockX = c * (blockWidth + blockPadding) + blockOffsetLeft;
-        const blockY = r * (blockHeight + blockPadding) + blockOffsetTop;
+        const blockX = c * blockWidth + blockOffsetLeft;
+        const blockY = r * blockHeight + blockOffsetTop;
         blocks[c][r].x = blockX;
         blocks[c][r].y = blockY;
         ctx.beginPath();
         ctx.rect(blockX, blockY, blockWidth, blockHeight);
-        ctx.fillStyle = "#0095DD";
+        ctx.fillStyle = "#c0392b";
         ctx.fill();
         ctx.closePath();
       }
