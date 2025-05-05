@@ -24,8 +24,8 @@ let ballDX = 2; // velocidade horizontal
 let ballDY = -2; // velocidade vertical
 
 // Variáveis de controle de velocidade
-let speedFactor = 1.02; // Aumento de 50% na velocidade ao bater na raquete
-let speedDecreaseFactor = 0.7; // Diminui a velocidade em 10% ao bater nas paredes laterais
+let speedFactor = 1.05; // Aumento de 5% na velocidade ao bater na raquete
+let speedDecreaseFactor = 1; // Não diminui a velocidade ao bater nas paredes laterais
 
 // Blocos
 const blockRowCount = 6;
@@ -50,6 +50,36 @@ for (let c = 0; c < blockColumnCount + 1; c++) {
     };
   }
 }
+
+// Função para gerar uma nova linha no topo
+function generateNewTopRow() {
+  let newRow = [];
+  for (let c = 0; c < blockColumnCount; c++) {
+    newRow.push({
+      x: 0,
+      y: 0,
+      status: 1,
+      color: getRandomColor()
+    });
+  }
+  return newRow;
+}
+
+// Função para adicionar uma nova linha no topo
+function addNewRowAtTop() {
+  for (let c = 0; c < blocks.length; c++) {
+    // Remove a última linha (a mais baixa visualmente)
+    blocks[c].pop();
+
+    // Adiciona nova linha no topo
+    blocks[c].unshift({
+      x: 0,
+      y: 0,
+      status: 1,
+      color: getRandomColor()
+    });
+  }
+}  
 
 // Controlo do teclado
 document.addEventListener("keydown", keyDownHandler);
@@ -153,22 +183,46 @@ function drawBlocks() {
     }
   }
 }  
-  
 
 // Colisão com os blocos
 function collisionDetection() {
-  for (let c = 0; c < blockColumnCount; c++) {
-    for (let r = 0; r < blockRowCount; r++) {
+  let rowsToCheck = new Set();
+  
+  for (let c = 0; c < blocks.length; c++) {
+    for (let r = 0; r < blocks[c].length; r++) {
       const b = blocks[c][r];
       if (b.status === 1) {
-        if (ballX > b.x && ballX < b.x + blockWidth && ballY > b.y && ballY < b.y + blockHeight) {
+        if (
+          ballX > b.x &&
+          ballX < b.x + blockWidth &&
+          ballY > b.y &&
+          ballY < b.y + blockHeight
+        ) {
           ballDY = -ballDY;
-          b.status = 0; // Destruir o bloco
+          b.status = 0; // destruir o bloco
+          rowsToCheck.add(r); // guarda quais linhas foram tocadas
         }
       }
     }
   }
+  
+  // Verifica se alguma linha foi completamente destruída
+  rowsToCheck.forEach((r) => {
+    let rowDestroyed = true;
+  
+    for (let c = 0; c < blocks.length; c++) {
+      if (blocks[c][r] && blocks[c][r].status !== 0) {
+        rowDestroyed = false;
+        break;
+      }
+    }
+  
+    if (rowDestroyed) {
+      addNewRowAtTop();
+    }
+  });
 }
+  
 
 // Limpa e redesenha o jogo a cada frame
 function draw() {
