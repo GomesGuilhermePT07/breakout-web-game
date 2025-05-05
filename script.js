@@ -24,8 +24,8 @@ let ballDX = 2; // velocidade horizontal
 let ballDY = -2; // velocidade vertical
 
 // Variáveis de controle de velocidade
-let speedFactor = 1.15; // Aumento de 50% na velocidade ao bater na raquete
-let speedDecreaseFactor = 0.9; // Diminui a velocidade em 10% ao bater nas paredes laterais
+let speedFactor = 1.02; // Aumento de 50% na velocidade ao bater na raquete
+let speedDecreaseFactor = 0.7; // Diminui a velocidade em 10% ao bater nas paredes laterais
 
 // Blocos
 const blockRowCount = 6;
@@ -110,8 +110,18 @@ function drawBlocks() {
         ctx.beginPath();
         ctx.rect(blockX, blockY, blockWidth, blockHeight);
         ctx.fillStyle = blocks[colIndex][r].color;
+        ctx.shadowColor = "rgba(0, 0, 0, 0.7)"; // cor da sombra
+        ctx.shadowBlur = 4;                     // suavidade
+        ctx.shadowOffsetX = 2;                  // deslocamento horizontal
+        ctx.shadowOffsetY = 2;                  // deslocamento vertical
         ctx.fill();
+        ctx.strokeStyle = "#333"; // cor da borda (podes trocar)
+        ctx.stroke();
         ctx.closePath();
+        ctx.shadowColor = "transparent";
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
       }
     }
   }
