@@ -7,7 +7,7 @@ const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 
 // Raquete
-const paddleWidth = 75;
+const paddleWidth = 100;
 const paddleHeight = 10;
 let paddleX = (canvasWidth - paddleWidth) / 2;
 
@@ -103,7 +103,8 @@ function drawPaddle() {
   ctx.shadowOffsetX = 2;
   ctx.shadowOffsetY = 2;
   
-  ctx.rect(paddleX, canvasHeight - paddleHeight - 10, paddleWidth, paddleHeight);
+  // Raquete com cantos arredondados (10px de raio)
+  ctx.roundRect(paddleX, canvasHeight - paddleHeight - 10, paddleWidth, paddleHeight, 10);
   ctx.fillStyle = "#eee";
   ctx.fill();
   ctx.closePath();
@@ -113,7 +114,7 @@ function drawPaddle() {
   ctx.shadowBlur = 0;
   ctx.shadowOffsetX = 0;
   ctx.shadowOffsetY = 0;
-}  
+}   
 
 // Desenha os blocos
 function drawBlocks() {
