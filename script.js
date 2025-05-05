@@ -74,20 +74,46 @@ function keyUpHandler(e) {
 // Desenha a bola
 function drawBall() {
   ctx.beginPath();
+  
+  // Sombra
+  ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
+  ctx.shadowBlur = 4;
+  ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 2;
+  
   ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
   ctx.fillStyle = "#fff";
   ctx.fill();
   ctx.closePath();
-}
+  
+  // Reset da sombra
+  ctx.shadowColor = "transparent";
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+}  
 
 // Desenha a raquete
 function drawPaddle() {
   ctx.beginPath();
+  
+  // Sombra
+  ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
+  ctx.shadowBlur = 4;
+  ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 2;
+  
   ctx.rect(paddleX, canvasHeight - paddleHeight - 10, paddleWidth, paddleHeight);
   ctx.fillStyle = "#eee";
   ctx.fill();
   ctx.closePath();
-}
+  
+  // Reset da sombra
+  ctx.shadowColor = "transparent";
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+}  
 
 // Desenha os blocos
 function drawBlocks() {
