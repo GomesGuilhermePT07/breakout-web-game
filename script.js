@@ -39,10 +39,15 @@ const blockOffsetLeft = 0;
 let blocks = [];
 
 // Criação dos blocos
-for (let c = 0; c < blockColumnCount; c++) {
+for (let c = 0; c < blockColumnCount + 1; c++) {
   blocks[c] = [];
   for (let r = 0; r < blockRowCount; r++) {
-    blocks[c][r] = { x: 0, y: 0, status: 1 };
+    blocks[c][r] = {
+      x: 0,
+      y: 0,
+      status: 1,
+      color: getRandomColor()
+    };
   }
 }
 
@@ -86,25 +91,31 @@ function drawPaddle() {
 
 // Desenha os blocos
 function drawBlocks() {
-   for (let r = 0; r < blockRowCount; r++) {
-     const rowOffset = (r % 2 === 0) ? 0 : blockWidth / 2; // deslocamento alternado
- 
-     for (let c = 0; c < blockColumnCount; c++) {
-       if (blocks[c][r].status === 1) {
-         const blockX = c * blockWidth + blockOffsetLeft + rowOffset;
-         const blockY = r * blockHeight + blockOffsetTop;
-         blocks[c][r].x = blockX;
-         blocks[c][r].y = blockY;
+  for (let r = 0; r < blockRowCount; r++) {
+    const isOddRow = r % 2 !== 0;
+    const rowOffset = isOddRow ? blockWidth / 2 : 0;
+    const colsInThisRow = isOddRow ? blockColumnCount - 1 : blockColumnCount;
   
-         ctx.beginPath();
-         ctx.rect(blockX, blockY, blockWidth, blockHeight);
-         ctx.fillStyle = "#c0392b";
-         ctx.fill();
-         ctx.closePath();
-       }
-     }
-   }
-}
+    for (let c = 0; c < colsInThisRow; c++) {
+      // Usamos c + (isOddRow ? 1 : 0) para indexar corretamente a matriz blocks
+      const colIndex = c + (isOddRow ? 1 : 0);
+  
+      if (blocks[colIndex] && blocks[colIndex][r].status === 1) {
+        const blockX = c * blockWidth + blockOffsetLeft + rowOffset;
+        const blockY = r * blockHeight + blockOffsetTop;
+  
+        blocks[colIndex][r].x = blockX;
+        blocks[colIndex][r].y = blockY;
+
+        ctx.beginPath();
+        ctx.rect(blockX, blockY, blockWidth, blockHeight);
+        ctx.fillStyle = blocks[colIndex][r].color;
+        ctx.fill();
+        ctx.closePath();
+      }
+    }
+  }
+}  
   
 
 // Colisão com os blocos
@@ -172,6 +183,11 @@ function draw() {
   }
 
   requestAnimationFrame(draw);
+}
+
+function getRandomColor() {
+  const colors = ["#e74c3c", "#f39c12", "#f1c40f", "#2ecc71", "#3498db", "#9b59b6", "#1abc9c", "#e67e22"];
+  return colors[Math.floor(Math.random() * colors.length)];
 }
 
 // Inicia o jogo
