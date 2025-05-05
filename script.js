@@ -23,6 +23,10 @@ let ballY = canvasHeight - 30;
 let ballDX = 2; // velocidade horizontal
 let ballDY = -2; // velocidade vertical
 
+// Variáveis de controle de velocidade
+let speedFactor = 1.15; // Aumento de 50% na velocidade ao bater na raquete
+let speedDecreaseFactor = 0.9; // Diminui a velocidade em 10% ao bater nas paredes laterais
+
 // Controlo do teclado
 document.addEventListener("keydown", keyDownHandler);
 document.addEventListener("keyup", keyUpHandler);
@@ -78,27 +82,35 @@ function draw() {
     paddleX -= paddleSpeed;
   }
 
-  // Colisão com as paredes
-  if (ballX + ballRadius > canvasWidth || ballX - ballRadius < 0) {
-    ballDX = -ballDX;
-  }
-  if (ballY - ballRadius < 0) {
-    ballDY = -ballDY;
-  }
-
   // Colisão com a raquete
   if (
     ballY + ballRadius >= canvasHeight - paddleHeight - 10 &&
     ballX >= paddleX &&
     ballX <= paddleX + paddleWidth
   ) {
+    ballDY = -ballDY * speedFactor; // Aumenta a velocidade vertical (50%)
+    ballDX *= speedFactor; // Aumenta a velocidade horizontal (50%)
+  }
+
+  // Colisão com as paredes laterais
+  if (ballX + ballRadius > canvasWidth) {
+    ballDX = -ballDX * speedDecreaseFactor; // Diminui a velocidade horizontal em 10%
+    ballX = canvasWidth - ballRadius; // Ajusta a posição da bola para evitar que ela fique presa
+  }
+  if (ballX - ballRadius < 0) {
+    ballDX = -ballDX * speedDecreaseFactor; // Diminui a velocidade horizontal em 10%
+    ballX = ballRadius; // Ajusta a posição da bola para evitar que ela fique presa
+  }
+
+  // Colisão com as paredes superior e inferior
+  if (ballY - ballRadius < 0) {
     ballDY = -ballDY;
   }
-  // Se falhar a raquete (atinge fundo)
-  else if (ballY + ballRadius > canvasHeight) {
+
+  // Colisão com o fundo (final do jogo)
+  if (ballY + ballRadius > canvasHeight) {
     document.location.reload(); // reinicia o jogo
   }
-  
 
   requestAnimationFrame(draw);
 }
