@@ -86,10 +86,19 @@ function draw() {
     ballDY = -ballDY;
   }
 
-  // Colisão com o fundo
-  if (ballY + ballRadius > canvasHeight) {
+  // Colisão com a raquete
+  if (
+    ballY + ballRadius >= canvasHeight - paddleHeight - 10 &&
+    ballX >= paddleX &&
+    ballX <= paddleX + paddleWidth
+  ) {
+    ballDY = -ballDY;
+  }
+  // Se falhar a raquete (atinge fundo)
+  else if (ballY + ballRadius > canvasHeight) {
     document.location.reload(); // reinicia o jogo
   }
+  
 
   requestAnimationFrame(draw);
 }
