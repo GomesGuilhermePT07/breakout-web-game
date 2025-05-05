@@ -11,12 +11,37 @@ const paddleWidth = 75;
 const paddleHeight = 10;
 let paddleX = (canvasWidth - paddleWidth) / 2;
 
+// Movimento da raquete
+let rightPressed = false;
+let leftPressed = false;
+const paddleSpeed = 5;
+
 // Bola
 const ballRadius = 8;
 let ballX = canvasWidth / 2;
 let ballY = canvasHeight - 30;
 let ballDX = 2; // velocidade horizontal
 let ballDY = -2; // velocidade vertical
+
+// Controlo do teclado
+document.addEventListener("keydown", keyDownHandler);
+document.addEventListener("keyup", keyUpHandler);
+
+function keyDownHandler(e) {
+  if (e.key === "Right" || e.key === "ArrowRight") {
+    rightPressed = true;
+  } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    leftPressed = true;
+  }
+}
+
+function keyUpHandler(e) {
+  if (e.key === "Right" || e.key === "ArrowRight") {
+    rightPressed = false;
+  } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    leftPressed = false;
+  }
+}
 
 // Desenha a bola
 function drawBall() {
@@ -45,6 +70,13 @@ function draw() {
   // Atualiza posição da bola
   ballX += ballDX;
   ballY += ballDY;
+
+  // Movimento da raquete
+  if (rightPressed && paddleX + paddleWidth < canvasWidth) {
+    paddleX += paddleSpeed;
+  } else if (leftPressed && paddleX > 0) {
+    paddleX -= paddleSpeed;
+  }
 
   // Colisão com as paredes
   if (ballX + ballRadius > canvasWidth || ballX - ballRadius < 0) {
