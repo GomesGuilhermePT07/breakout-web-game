@@ -38,48 +38,46 @@ const blockOffsetLeft = 0;
 
 let blocks = [];
 
-// Criação dos blocos
-for (let c = 0; c < blockColumnCount + 1; c++) {
+// Criação dos blocos (com x e y fixos)
+for (let c = 0; c < blockColumnCount; c++) {
   blocks[c] = [];
   for (let r = 0; r < blockRowCount; r++) {
+    const isOddRow = r % 2 !== 0;
+    const rowOffset = isOddRow ? blockWidth / 2 : 0;
+    const colsInThisRow = isOddRow ? blockColumnCount - 1 : blockColumnCount;
+    const colIndex = c;
+
     blocks[c][r] = {
-      x: 0,
-      y: 0,
+      x: c * blockWidth + rowOffset,
+      y: r * blockHeight,
       status: 1,
       color: getRandomColor()
     };
   }
 }
 
-// Função para gerar uma nova linha no topo
-function generateNewTopRow() {
-  let newRow = [];
-  for (let c = 0; c < blockColumnCount; c++) {
-    newRow.push({
-      x: 0,
-      y: 0,
-      status: 1,
-      color: getRandomColor()
-    });
-  }
-  return newRow;
-}
-
 // Função para adicionar uma nova linha no topo
-function addNewRowAtTop() {
+function addNewRowAtTop(destroyedRowIndex) {
+  // Remove a linha destruída (índice `destroyedRowIndex`)
   for (let c = 0; c < blocks.length; c++) {
-    // Remove a última linha (a mais baixa visualmente)
-    blocks[c].pop();
-
+    blocks[c].splice(destroyedRowIndex, 1);
+  
     // Adiciona nova linha no topo
     blocks[c].unshift({
-      x: 0,
-      y: 0,
+      x: c * blockWidth + (destroyedRowIndex % 2 !== 0 ? blockWidth / 2 : 0), // Deslocamento para linhas ímpares
+      y: 0, // Coloca no topo
       status: 1,
       color: getRandomColor()
     });
   }
-}  
+
+  // Atualiza a posição dos blocos para garantir o espaçamento correto
+  for (let c = 0; c < blocks.length; c++) {
+    for (let r = 0; r < blocks[c].length; r++) {
+        blocks[c][r].y = r * blockHeight;
+    }
+  }
+}
 
 // Controlo do teclado
 document.addEventListener("keydown", keyDownHandler);
@@ -133,7 +131,7 @@ function drawPaddle() {
   ctx.shadowOffsetX = 2;
   ctx.shadowOffsetY = 2;
   
-  // Raquete com cantos arredondados (10px de raio)
+  // Raquete com cantos arredondados
   ctx.roundRect(paddleX, canvasHeight - paddleHeight - 10, paddleWidth, paddleHeight, 10);
   ctx.fillStyle = "#eee";
   ctx.fill();
@@ -148,41 +146,41 @@ function drawPaddle() {
 
 // Desenha os blocos
 function drawBlocks() {
-  for (let r = 0; r < blockRowCount; r++) {
-    const isOddRow = r % 2 !== 0;
-    const rowOffset = isOddRow ? blockWidth / 2 : 0;
-    const colsInThisRow = isOddRow ? blockColumnCount - 1 : blockColumnCount;
+    for (let r = 0; r < blocks[0].length; r++) {
+      const isOddRow = r % 2 !== 0;
+      const rowOffset = isOddRow ? blockWidth / 2 : 0;
+      const colsInThisRow = isOddRow ? blockColumnCount - 1 : blockColumnCount;
+    
+      for (let c = 0; c < colsInThisRow; c++) {
+        // Usamos c + (isOddRow ? 1 : 0) para indexar corretamente a matriz blocks
+        const colIndex = c + (isOddRow ? 1 : 0);
+    
+        if (blocks[colIndex] && blocks[colIndex][r].status === 1) {
+          const blockX = c * blockWidth + blockOffsetLeft + rowOffset;
+          const blockY = r * blockHeight + blockOffsetTop;
+    
+          blocks[colIndex][r].x = blockX;
+          blocks[colIndex][r].y = blockY;
   
-    for (let c = 0; c < colsInThisRow; c++) {
-      // Usamos c + (isOddRow ? 1 : 0) para indexar corretamente a matriz blocks
-      const colIndex = c + (isOddRow ? 1 : 0);
-  
-      if (blocks[colIndex] && blocks[colIndex][r].status === 1) {
-        const blockX = c * blockWidth + blockOffsetLeft + rowOffset;
-        const blockY = r * blockHeight + blockOffsetTop;
-  
-        blocks[colIndex][r].x = blockX;
-        blocks[colIndex][r].y = blockY;
-
-        ctx.beginPath();
-        ctx.rect(blockX, blockY, blockWidth, blockHeight);
-        ctx.fillStyle = blocks[colIndex][r].color;
-        ctx.shadowColor = "rgba(0, 0, 0, 0.7)"; // cor da sombra
-        ctx.shadowBlur = 4;                     // suavidade
-        ctx.shadowOffsetX = 2;                  // deslocamento horizontal
-        ctx.shadowOffsetY = 2;                  // deslocamento vertical
-        ctx.fill();
-        ctx.strokeStyle = "#333"; // cor da borda (podes trocar)
-        ctx.stroke();
-        ctx.closePath();
-        ctx.shadowColor = "transparent";
-        ctx.shadowBlur = 0;
-        ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 0;
+          ctx.beginPath();
+          ctx.rect(blockX, blockY, blockWidth, blockHeight);
+          ctx.fillStyle = blocks[colIndex][r].color;
+          ctx.shadowColor = "rgba(0, 0, 0, 0.7)"; // cor da sombra
+          ctx.shadowBlur = 4;                     // suavidade
+          ctx.shadowOffsetX = 2;                  // deslocamento horizontal
+          ctx.shadowOffsetY = 2;                  // deslocamento vertical
+          ctx.fill();
+          ctx.strokeStyle = "#333"; // cor da borda (podes trocar)
+          ctx.stroke();
+          ctx.closePath();
+          ctx.shadowColor = "transparent";
+          ctx.shadowBlur = 0;
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 0;
+        }
       }
     }
-  }
-}  
+  }   
 
 // Colisão com os blocos
 function collisionDetection() {
@@ -218,11 +216,10 @@ function collisionDetection() {
     }
   
     if (rowDestroyed) {
-      addNewRowAtTop();
+      addNewRowAtTop(r); // Chama a função que faz as linhas descerem
     }
   });
 }
-  
 
 // Limpa e redesenha o jogo a cada frame
 function draw() {
