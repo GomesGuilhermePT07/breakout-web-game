@@ -38,7 +38,7 @@ const blockOffsetLeft = 0;
 
 let blocks = [];
 
-// Criação dos blocos (com x e y fixos)
+// Criação dos blocos
 for (let c = 0; c < blockColumnCount; c++) {
   blocks[c] = [];
   for (let r = 0; r < blockRowCount; r++) {
@@ -58,7 +58,7 @@ for (let c = 0; c < blockColumnCount; c++) {
 
 // Função para adicionar uma nova linha no topo
 function addNewRowAtTop(destroyedRowIndex) {
-  // Remove a linha destruída (índice `destroyedRowIndex`)
+  // Remove a linha destruída
   for (let c = 0; c < blocks.length; c++) {
     blocks[c].splice(destroyedRowIndex, 1);
   
@@ -152,7 +152,6 @@ function drawBlocks() {
       const colsInThisRow = isOddRow ? blockColumnCount - 1 : blockColumnCount;
     
       for (let c = 0; c < colsInThisRow; c++) {
-        // Usamos c + (isOddRow ? 1 : 0) para indexar corretamente a matriz blocks
         const colIndex = c + (isOddRow ? 1 : 0);
     
         if (blocks[colIndex] && blocks[colIndex][r].status === 1) {
@@ -166,11 +165,11 @@ function drawBlocks() {
           ctx.rect(blockX, blockY, blockWidth, blockHeight);
           ctx.fillStyle = blocks[colIndex][r].color;
           ctx.shadowColor = "rgba(0, 0, 0, 0.7)"; // cor da sombra
-          ctx.shadowBlur = 4;                     // suavidade
-          ctx.shadowOffsetX = 2;                  // deslocamento horizontal
-          ctx.shadowOffsetY = 2;                  // deslocamento vertical
+          ctx.shadowBlur = 4;                       // suavidade
+          ctx.shadowOffsetX = 2;                    // deslocamento horizontal
+          ctx.shadowOffsetY = 2;                    // deslocamento vertical
           ctx.fill();
-          ctx.strokeStyle = "#333"; // cor da borda (podes trocar)
+          ctx.strokeStyle = "#333"; // cor da borda
           ctx.stroke();
           ctx.closePath();
           ctx.shadowColor = "transparent";
@@ -246,17 +245,17 @@ function draw() {
     ballX >= paddleX &&
     ballX <= paddleX + paddleWidth
   ) {
-    ballDY = -ballDY * speedFactor; // Aumenta a velocidade vertical (50%)
-    ballDX *= speedFactor; // Aumenta a velocidade horizontal (50%)
+    ballDY = -ballDY * speedFactor; // Aumenta a velocidade vertical
+    ballDX *= speedFactor; // Aumenta a velocidade horizontal
   }
 
   // Colisão com as paredes laterais
   if (ballX + ballRadius > canvasWidth) {
-    ballDX = -ballDX * speedDecreaseFactor; // Diminui a velocidade horizontal em 10%
+    ballDX = -ballDX * speedDecreaseFactor; 
     ballX = canvasWidth - ballRadius; // Ajusta a posição da bola para evitar que ela fique presa
   }
   if (ballX - ballRadius < 0) {
-    ballDX = -ballDX * speedDecreaseFactor; // Diminui a velocidade horizontal em 10%
+    ballDX = -ballDX * speedDecreaseFactor;
     ballX = ballRadius; // Ajusta a posição da bola para evitar que ela fique presa
   }
 
