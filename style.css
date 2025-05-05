@@ -1,4 +1,5 @@
 *{
+    font-family: 'Gill Sans MT';
     margin: 0;
     padding: 0;
 }
@@ -13,4 +14,41 @@
 .logo-png img{
     width: 80px;
     height: 80px;
+}
+
+.water-mark {
+    display: flex;
+    position: fixed;
+    bottom: 10px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.2);
+    pointer-events: none;
+    gap: .5rem;
+}
+
+.water-mark strong{
+    color: #a259ff;
+}
+
+.water-mark img{
+    width: 20px;
+    height: 20px;
+    opacity: 0.5;
+    margin-bottom: -0.2rem;
+}
+
+body{
+    background-color: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+canvas {
+    background-color: #333;
+    border: 2px solid #fff;
 }
