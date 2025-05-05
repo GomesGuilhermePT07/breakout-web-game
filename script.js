@@ -86,22 +86,26 @@ function drawPaddle() {
 
 // Desenha os blocos
 function drawBlocks() {
-  for (let c = 0; c < blockColumnCount; c++) {
-    for (let r = 0; r < blockRowCount; r++) {
-      if (blocks[c][r].status === 1) {
-        const blockX = c * blockWidth + blockOffsetLeft;
-        const blockY = r * blockHeight + blockOffsetTop;
-        blocks[c][r].x = blockX;
-        blocks[c][r].y = blockY;
-        ctx.beginPath();
-        ctx.rect(blockX, blockY, blockWidth, blockHeight);
-        ctx.fillStyle = "#c0392b";
-        ctx.fill();
-        ctx.closePath();
-      }
-    }
-  }
+   for (let r = 0; r < blockRowCount; r++) {
+     const rowOffset = (r % 2 === 0) ? 0 : blockWidth / 2; // deslocamento alternado
+ 
+     for (let c = 0; c < blockColumnCount; c++) {
+       if (blocks[c][r].status === 1) {
+         const blockX = c * blockWidth + blockOffsetLeft + rowOffset;
+         const blockY = r * blockHeight + blockOffsetTop;
+         blocks[c][r].x = blockX;
+         blocks[c][r].y = blockY;
+  
+         ctx.beginPath();
+         ctx.rect(blockX, blockY, blockWidth, blockHeight);
+         ctx.fillStyle = "#c0392b";
+         ctx.fill();
+         ctx.closePath();
+       }
+     }
+   }
 }
+  
 
 // Colisão com os blocos
 function collisionDetection() {
