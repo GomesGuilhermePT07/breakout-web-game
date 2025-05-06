@@ -67,3 +67,14 @@ canvas {
 #scoreValue {
     color: #a259ff;
 }
+
+.score-history {
+    position: absolute;
+    top: 50px;
+    width: 100%;
+    text-align: center;
+    color: #aaa;
+    font-size: 14px;
+    font-family: 'Gill Sans MT';
+    z-index: 100;
+}

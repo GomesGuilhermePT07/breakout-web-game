@@ -40,6 +40,8 @@ let blocks = [];
 
 let score = 0;
 
+let scoreHistory = [];
+
 // Criação dos blocos
 for (let c = 0; c < blockColumnCount; c++) {
   blocks[c] = [];
@@ -278,7 +280,8 @@ function draw() {
 
   // Colisão com o fundo (final do jogo)
   if (ballY + ballRadius > canvasHeight) {
-    document.location.reload(); // reinicia o jogo
+    // document.location.reload(); // reinicia o jogo
+    endGame();
   }
 
   requestAnimationFrame(draw);
@@ -287,6 +290,53 @@ function draw() {
 function getRandomColor() {
   const colors = ["#e74c3c", "#f39c12", "#f1c40f", "#2ecc71", "#3498db", "#9b59b6", "#1abc9c", "#e67e22"];
   return colors[Math.floor(Math.random() * colors.length)];
+}
+
+function endGame() {
+  // Adiciona o score atual ao histórico
+  scoreHistory.push(score);
+
+  // Atualiza o histórico no HTML
+  updateScoreHistory();
+
+  // Reinicia o jogo sem reiniciar a página
+  resetGame();
+}
+
+function resetGame() {
+  // Reinicia posições
+  paddleX = (canvasWidth - paddleWidth) / 2;
+
+  ballX = canvasWidth / 2;
+  ballY = canvasHeight - 30;
+  ballDX = 2;
+  ballDY = -2;
+
+  // Reinicia score
+  score = 0;
+  document.getElementById("scoreValue").textContent = score;
+
+  // Reinicia blocos
+  blocks = [];
+  for (let c = 0; c < blockColumnCount; c++) {
+    blocks[c] = [];
+    for(let r = 0; r < blockRowCount; r++) {
+      const isOddRow = r % 2 !== 0;
+      const rowOffset = isOddRow ? blockWidth / 2 : 0;
+
+      blocks[c][r] = {
+        x: c * blockWidth + rowOffset,
+        y: r * blockHeight,
+        status: 1,
+        color: getRandomColor()
+      };
+    }
+  }
+}
+
+function updateScoreHistory() {
+  const list = scoreHistory.join(" | ");
+  document.getElementById("scoreList").textContent = list || "Nenhum";
 }
 
 // Inicia o jogo
