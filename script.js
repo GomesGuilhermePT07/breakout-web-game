@@ -38,6 +38,8 @@ const blockOffsetLeft = 0;
 
 let blocks = [];
 
+let score = 0;
+
 // Criação dos blocos
 for (let c = 0; c < blockColumnCount; c++) {
   blocks[c] = [];
@@ -197,6 +199,8 @@ function collisionDetection() {
         ) {
           ballDY = -ballDY;
           b.status = 0; // destruir o bloco
+          score+=10;
+          document.getElementById("scoreValue").textContent = score;
           rowsToCheck.add(r); // guarda quais linhas foram tocadas
         }
       }
@@ -220,9 +224,17 @@ function collisionDetection() {
   });
 }
 
+// Calcular a pontuação
+function drawScore() {
+  ctx.font = "16px Gill Sans MT";
+  ctx.fillStyle = "#fff";
+  ctx.fillText("Score: " + score, 10, 20);
+}
+
 // Limpa e redesenha o jogo a cada frame
 function draw() {
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  drawScore();
   drawBall();
   drawPaddle();
   drawBlocks();

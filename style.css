@@ -52,3 +52,18 @@ canvas {
     background-color: #333;
     border: 2px solid #fff;
 }
+
+.score-display {
+    position: absolute;
+    top: 80px;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 25px;
+    font-family: 'Gill Sans MT';
+    z-index: 100;
+}
+
+#scoreValue {
+    color: #a259ff;
+}
