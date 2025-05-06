@@ -335,9 +335,25 @@ function resetGame() {
 }
 
 function updateScoreHistory() {
+  const scoreList = document.getElementById("scoreList");
+
+  // Limpa a lista
+  scoreList.innerHTML = "";
+
   const topScores = [...scoreHistory].sort((a, b) => b - a).slice(0, 5);
-  const list = topScores.join(" | ");
-  document.getElementById("scoreList").textContent = list || "Nenhum";
+
+  if (topScores.length === 0) {
+    const li = document.createElement("li");
+    li.textContent = "Nenhum";
+    scoreList.appendChild(li);
+    return;
+  }
+
+  topScores.forEach((score, index) => {
+    const li = document.createElement("li");
+    li.textContent = `${index + 1}.${score} pts`;
+    scoreList.appendChild(li);
+  });
 }
 
 // Inicia o jogo
