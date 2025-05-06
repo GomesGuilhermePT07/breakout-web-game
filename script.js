@@ -335,7 +335,8 @@ function resetGame() {
 }
 
 function updateScoreHistory() {
-  const list = scoreHistory.join(" | ");
+  const topScores = [...scoreHistory].sort((a, b) => b - a).slice(0, 5);
+  const list = topScores.join(" | ");
   document.getElementById("scoreList").textContent = list || "Nenhum";
 }
 
