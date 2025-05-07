@@ -306,7 +306,30 @@ function updateScoreHistory() {
 
   topScores.forEach((entry, index) => {
     const li = document.createElement("li");
-    li.innerHTML = `<span class="score-rank">${index + 1}.</span><span class="score-value">${entry.name} - ${entry.score} pts</span>`;
+    li.innerHTML = `<span class="score-rank">${index + 1}. ${entry.name}</span><span class="score-value">${entry.score} pts</span>`;
+    scoreList.appendChild(li);
+  });
+}
+
+function udpdateScoreboard() {
+  const storedScores = JSON.parse(localStorage.getItem('topScores')) || [];
+  const scoreList = document.getElementById('scoreList');
+
+  scoreList.innerHTML = '';
+
+  if (storedScores.length === 0) {
+    scoreList.innerHTML = '<li>Nenhum</li>';
+    return;
+  }
+
+  storedScores.slice(0, 5).forEach((entry, index) => {
+    const li = document.createElement('li');
+    const rank = `${index + 1}.`;
+    const name = entry.name.toUpperCase().padEnd(10, ' ');
+    const score = `${entry.score} pts`;
+
+    // Junta tudo numa string formatada
+    li.textContent = `${rank} ${name} ${score}`;
     scoreList.appendChild(li);
   });
 }
