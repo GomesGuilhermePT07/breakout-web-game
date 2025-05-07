@@ -20,12 +20,12 @@ const paddleSpeed = 10;
 const ballRadius = 8;
 let ballX = canvasWidth / 2;
 let ballY = canvasHeight - 30;
-let ballDX = 2; // velocidade horizontal
-let ballDY = -2; // velocidade vertical
+let ballDX = 2;
+let ballDY = -2;
 
 // Variáveis de controle de velocidade
-let speedFactor = 1.05; // Aumento de 5% na velocidade ao bater na raquete
-let speedDecreaseFactor = 1; // Não diminui a velocidade ao bater nas paredes laterais
+let speedFactor = 1.05;
+let speedDecreaseFactor = 1;
 
 // Blocos
 const blockRowCount = 6;
@@ -40,6 +40,7 @@ let blocks = [];
 
 let score = 0;
 
+// Histórico com nome e score
 let scoreHistory = [];
 
 // Criação dos blocos
@@ -48,9 +49,6 @@ for (let c = 0; c < blockColumnCount; c++) {
   for (let r = 0; r < blockRowCount; r++) {
     const isOddRow = r % 2 !== 0;
     const rowOffset = isOddRow ? blockWidth / 2 : 0;
-    const colsInThisRow = isOddRow ? blockColumnCount - 1 : blockColumnCount;
-    const colIndex = c;
-
     blocks[c][r] = {
       x: c * blockWidth + rowOffset,
       y: r * blockHeight,
@@ -60,25 +58,20 @@ for (let c = 0; c < blockColumnCount; c++) {
   }
 }
 
-// Função para adicionar uma nova linha no topo
 function addNewRowAtTop(destroyedRowIndex) {
-  // Remove a linha destruída
   for (let c = 0; c < blocks.length; c++) {
     blocks[c].splice(destroyedRowIndex, 1);
-  
-    // Adiciona nova linha no topo
     blocks[c].unshift({
-      x: c * blockWidth + (destroyedRowIndex % 2 !== 0 ? blockWidth / 2 : 0), // Deslocamento para linhas ímpares
-      y: 0, // Coloca no topo
+      x: c * blockWidth + (destroyedRowIndex % 2 !== 0 ? blockWidth / 2 : 0),
+      y: 0,
       status: 1,
       color: getRandomColor()
     });
   }
 
-  // Atualiza a posição dos blocos para garantir o espaçamento correto
   for (let c = 0; c < blocks.length; c++) {
     for (let r = 0; r < blocks[c].length; r++) {
-        blocks[c][r].y = r * blockHeight;
+      blocks[c][r].y = r * blockHeight;
     }
   }
 }
@@ -88,107 +81,86 @@ document.addEventListener("keydown", keyDownHandler);
 document.addEventListener("keyup", keyUpHandler);
 
 function keyDownHandler(e) {
-  if (e.key === "Right" || e.key === "ArrowRight") {
-    rightPressed = true;
-  } else if (e.key === "Left" || e.key === "ArrowLeft") {
-    leftPressed = true;
-  }
+  if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
+  else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
 }
 
 function keyUpHandler(e) {
-  if (e.key === "Right" || e.key === "ArrowRight") {
-    rightPressed = false;
-  } else if (e.key === "Left" || e.key === "ArrowLeft") {
-    leftPressed = false;
-  }
+  if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
+  else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
 }
 
-// Desenha a bola
 function drawBall() {
   ctx.beginPath();
-  
-  // Sombra
   ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
   ctx.shadowBlur = 4;
   ctx.shadowOffsetX = 2;
   ctx.shadowOffsetY = 2;
-  
   ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
   ctx.fillStyle = "#fff";
   ctx.fill();
   ctx.closePath();
-  
-  // Reset da sombra
   ctx.shadowColor = "transparent";
   ctx.shadowBlur = 0;
   ctx.shadowOffsetX = 0;
   ctx.shadowOffsetY = 0;
-}  
+}
 
-// Desenha a raquete
 function drawPaddle() {
   ctx.beginPath();
-  
-  // Sombra
   ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
   ctx.shadowBlur = 4;
   ctx.shadowOffsetX = 2;
   ctx.shadowOffsetY = 2;
-  
-  // Raquete com cantos arredondados
   ctx.roundRect(paddleX, canvasHeight - paddleHeight - 10, paddleWidth, paddleHeight, 10);
   ctx.fillStyle = "#eee";
   ctx.fill();
   ctx.closePath();
-  
-  // Reset da sombra
   ctx.shadowColor = "transparent";
   ctx.shadowBlur = 0;
   ctx.shadowOffsetX = 0;
   ctx.shadowOffsetY = 0;
-}   
+}
 
-// Desenha os blocos
 function drawBlocks() {
-    for (let r = 0; r < blocks[0].length; r++) {
-      const isOddRow = r % 2 !== 0;
-      const rowOffset = isOddRow ? blockWidth / 2 : 0;
-      const colsInThisRow = isOddRow ? blockColumnCount - 1 : blockColumnCount;
-    
-      for (let c = 0; c < colsInThisRow; c++) {
-        const colIndex = c + (isOddRow ? 1 : 0);
-    
-        if (blocks[colIndex] && blocks[colIndex][r].status === 1) {
-          const blockX = c * blockWidth + blockOffsetLeft + rowOffset;
-          const blockY = r * blockHeight + blockOffsetTop;
-    
-          blocks[colIndex][r].x = blockX;
-          blocks[colIndex][r].y = blockY;
-  
-          ctx.beginPath();
-          ctx.rect(blockX, blockY, blockWidth, blockHeight);
-          ctx.fillStyle = blocks[colIndex][r].color;
-          ctx.shadowColor = "rgba(0, 0, 0, 0.7)"; // cor da sombra
-          ctx.shadowBlur = 4;                       // suavidade
-          ctx.shadowOffsetX = 2;                    // deslocamento horizontal
-          ctx.shadowOffsetY = 2;                    // deslocamento vertical
-          ctx.fill();
-          ctx.strokeStyle = "#333"; // cor da borda
-          ctx.stroke();
-          ctx.closePath();
-          ctx.shadowColor = "transparent";
-          ctx.shadowBlur = 0;
-          ctx.shadowOffsetX = 0;
-          ctx.shadowOffsetY = 0;
-        }
+  for (let r = 0; r < blocks[0].length; r++) {
+    const isOddRow = r % 2 !== 0;
+    const rowOffset = isOddRow ? blockWidth / 2 : 0;
+    const colsInThisRow = isOddRow ? blockColumnCount - 1 : blockColumnCount;
+
+    for (let c = 0; c < colsInThisRow; c++) {
+      const colIndex = c + (isOddRow ? 1 : 0);
+
+      if (blocks[colIndex] && blocks[colIndex][r].status === 1) {
+        const blockX = c * blockWidth + blockOffsetLeft + rowOffset;
+        const blockY = r * blockHeight + blockOffsetTop;
+
+        blocks[colIndex][r].x = blockX;
+        blocks[colIndex][r].y = blockY;
+
+        ctx.beginPath();
+        ctx.rect(blockX, blockY, blockWidth, blockHeight);
+        ctx.fillStyle = blocks[colIndex][r].color;
+        ctx.shadowColor = "rgba(0, 0, 0, 0.7)";
+        ctx.shadowBlur = 4;
+        ctx.shadowOffsetX = 2;
+        ctx.shadowOffsetY = 2;
+        ctx.fill();
+        ctx.strokeStyle = "#333";
+        ctx.stroke();
+        ctx.closePath();
+        ctx.shadowColor = "transparent";
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
       }
     }
-  }   
+  }
+}
 
-// Colisão com os blocos
 function collisionDetection() {
   let rowsToCheck = new Set();
-  
+
   for (let c = 0; c < blocks.length; c++) {
     for (let r = 0; r < blocks[c].length; r++) {
       const b = blocks[c][r];
@@ -200,40 +172,33 @@ function collisionDetection() {
           ballY < b.y + blockHeight
         ) {
           ballDY = -ballDY;
-          b.status = 0; // destruir o bloco
-          score+=10;
+          b.status = 0;
+          score += 10;
           document.getElementById("scoreValue").textContent = score;
-          rowsToCheck.add(r); // guarda quais linhas foram tocadas
+          rowsToCheck.add(r);
         }
       }
     }
   }
-  
-  // Verifica se alguma linha foi completamente destruída
+
   rowsToCheck.forEach((r) => {
     let rowDestroyed = true;
-  
     for (let c = 0; c < blocks.length; c++) {
       if (blocks[c][r] && blocks[c][r].status !== 0) {
         rowDestroyed = false;
         break;
       }
     }
-  
-    if (rowDestroyed) {
-      addNewRowAtTop(r); // Chama a função que faz as linhas descerem
-    }
+    if (rowDestroyed) addNewRowAtTop(r);
   });
 }
 
-// Calcular a pontuação
 function drawScore() {
   ctx.font = "16px Gill Sans MT";
   ctx.fillStyle = "#fff";
   ctx.fillText("Score: " + score, 10, 20);
 }
 
-// Limpa e redesenha o jogo a cada frame
 function draw() {
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
   drawScore();
@@ -242,45 +207,35 @@ function draw() {
   drawBlocks();
   collisionDetection();
 
-  // Atualiza posição da bola
   ballX += ballDX;
   ballY += ballDY;
 
-  // Movimento da raquete
-  if (rightPressed && paddleX + paddleWidth < canvasWidth) {
-    paddleX += paddleSpeed;
-  } else if (leftPressed && paddleX > 0) {
-    paddleX -= paddleSpeed;
-  }
+  if (rightPressed && paddleX + paddleWidth < canvasWidth) paddleX += paddleSpeed;
+  else if (leftPressed && paddleX > 0) paddleX -= paddleSpeed;
 
-  // Colisão com a raquete
   if (
     ballY + ballRadius >= canvasHeight - paddleHeight - 10 &&
     ballX >= paddleX &&
     ballX <= paddleX + paddleWidth
   ) {
-    ballDY = -ballDY * speedFactor; // Aumenta a velocidade vertical
-    ballDX *= speedFactor; // Aumenta a velocidade horizontal
+    ballDY = -ballDY * speedFactor;
+    ballDX *= speedFactor;
   }
 
-  // Colisão com as paredes laterais
   if (ballX + ballRadius > canvasWidth) {
-    ballDX = -ballDX * speedDecreaseFactor; 
-    ballX = canvasWidth - ballRadius; // Ajusta a posição da bola para evitar que ela fique presa
+    ballDX = -ballDX * speedDecreaseFactor;
+    ballX = canvasWidth - ballRadius;
   }
   if (ballX - ballRadius < 0) {
     ballDX = -ballDX * speedDecreaseFactor;
-    ballX = ballRadius; // Ajusta a posição da bola para evitar que ela fique presa
+    ballX = ballRadius;
   }
 
-  // Colisão com as paredes superior e inferior
   if (ballY - ballRadius < 0) {
     ballDY = -ballDY;
   }
 
-  // Colisão com o fundo (final do jogo)
   if (ballY + ballRadius > canvasHeight) {
-    // document.location.reload(); // reinicia o jogo
     endGame();
   }
 
@@ -293,34 +248,24 @@ function getRandomColor() {
 }
 
 function endGame() {
-  // Adiciona o score atual ao histórico
-  scoreHistory.push(score);
-
-  // Atualiza o histórico no HTML
-  updateScoreHistory();
-
-  // Reinicia o jogo sem reiniciar a página
+  addScoreToHistory(score);
   resetGame();
 }
 
 function resetGame() {
-  // Reinicia posições
   paddleX = (canvasWidth - paddleWidth) / 2;
-
   ballX = canvasWidth / 2;
   ballY = canvasHeight - 30;
   ballDX = 2;
   ballDY = -2;
 
-  // Reinicia score
   score = 0;
   document.getElementById("scoreValue").textContent = score;
 
-  // Reinicia blocos
   blocks = [];
   for (let c = 0; c < blockColumnCount; c++) {
     blocks[c] = [];
-    for(let r = 0; r < blockRowCount; r++) {
+    for (let r = 0; r < blockRowCount; r++) {
       const isOddRow = r % 2 !== 0;
       const rowOffset = isOddRow ? blockWidth / 2 : 0;
 
@@ -334,13 +279,23 @@ function resetGame() {
   }
 }
 
+function addScoreToHistory(score) {
+  const topScores = [...scoreHistory].sort((a, b) => b.score - a.score);
+  if (topScores.length < 5 || score > topScores[topScores.length - 1].score) {
+    let name = prompt("Parabéns! Insere as tuas 3 letras:", "").toUpperCase();
+    if (!name || name.length !== 3) name = "???";
+    scoreHistory.push({ name, score });
+  }
+  updateScoreHistory();
+}
+
 function updateScoreHistory() {
   const scoreList = document.getElementById("scoreList");
-
-  // Limpa a lista
   scoreList.innerHTML = "";
 
-  const topScores = [...scoreHistory].sort((a, b) => b - a).slice(0, 5);
+  const topScores = [...scoreHistory]
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 5);
 
   if (topScores.length === 0) {
     const li = document.createElement("li");
@@ -349,12 +304,11 @@ function updateScoreHistory() {
     return;
   }
 
-  topScores.forEach((score, index) => {
+  topScores.forEach((entry, index) => {
     const li = document.createElement("li");
-    li.innerHTML = `<span class="score-rank">${index + 1}.</span><span class="score-value">${score} pts</span>`;
+    li.innerHTML = `<span class="score-rank">${index + 1}.</span><span class="score-value">${entry.name} - ${entry.score} pts</span>`;
     scoreList.appendChild(li);
   });
 }
 
-// Inicia o jogo
 draw();
