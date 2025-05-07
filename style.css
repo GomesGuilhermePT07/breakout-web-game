@@ -111,4 +111,17 @@ canvas {
     font-size: 18px;
     margin: 5px 0;
     text-shadow: 0 0 3px #0f0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 5px;
+}
+
+.score-rank {
+    text-align: left;
+    flex: 1;
+}
+
+.score-value {
+    text-align: right;
+    flex: 1;
 }

@@ -351,7 +351,7 @@ function updateScoreHistory() {
 
   topScores.forEach((score, index) => {
     const li = document.createElement("li");
-    li.textContent = `${index + 1}.${score} pts`;
+    li.innerHTML = `<span class="score-rank">${index + 1}.</span><span class="score-value">${score} pts</span>`;
     scoreList.appendChild(li);
   });
 }
