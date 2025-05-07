@@ -85,12 +85,12 @@ canvas {
     left: calc(50% + 360px); /* metade do canvas + margem */
     transform: translateY(-50%);
     background: #000;
-    border: 3px solid #0f0;
+    border: 3px solid #a259ff;
     padding: 20px;
-    color: #0f0;
+    color: #a259ff;
     font-family: 'Courier New', monospace;
     text-align: center;
-    box-shadow: 0 0 20px #0f0;
+    box-shadow: 0 0 20px #a259ff;
     width: 160px;
     z-index: 100;
 }
@@ -98,7 +98,7 @@ canvas {
 .arcade-scoreboard h3 {
     margin-bottom: 10px;
     font-size: 20px;
-    text-shadow: 0 0 5px #0f0;
+    text-shadow: 0 0 5px #a259ff;
 }
 
 .arcade-scoreboard ul {
@@ -110,7 +110,7 @@ canvas {
 .arcade-scoreboard li {
     font-size: 18px;
     margin: 5px 0;
-    text-shadow: 0 0 3px #0f0;
+    text-shadow: 0 0 3px #a259ff;
     display: flex;
     justify-content: space-between;
     padding: 0 5px;
