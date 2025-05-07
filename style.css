@@ -125,3 +125,10 @@ canvas {
     text-align: right;
     flex: 1;
 }
+
+.top-score-first {
+    font-size: 20px;
+    color: #fff;
+    text-shadow: 0 0 5px #a259ff;
+    font-weight: bold;
+}
