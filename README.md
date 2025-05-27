@@ -1,9 +1,23 @@
+<div align="center">
+
  ## 🕹️Breakout Game
 
-<div align="center">
-  <p>A classic funny game for the ones who love an arcade</p>
-  <p>Developed with HTML + CSS + JavaScript</p>
 </div>
+
+<p align="center">
+  Developed with HTML + CSS + JavaScript. <br>
+  A classic funny game for the ones who love an arcade. <br>
+ ⭐ If you liked this project, please give it a star. <br>
+</p>
+
+<!-- |||||||||||||||||||| SPONSORS & STARS |||||||||||||||||||| -->
+<p align='center'>
+  <a href="https://github.com/sponsors/dev-ggomes"><img alt="Sponsor" src="https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#white" /></a>
+  &nbsp;
+  <a href="#"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/dev-ggomes/auto-refresh-any-site?style=for-the-badge" /></a>
+</p>
+
+<br>
 
 ---
 
